@@ -124,7 +124,21 @@ OverpassAPI.prototype.loadDiff = function(from, to, relations, postLoadCallback,
     if (!this.bbox) {
       this.bbox = this.bboxControl.addBBoxFromViewPort();
     }
-    bboxParam = OpenLayers.String.format('&bbox=${left},${bottom},${right},${top}', this.bbox);
+    var lB = 23.1783344;
+    var bB = 51.2575982;
+    var rB = 32.7627809;
+    var tB = 56.17218;
+    var lC = this.bbox.left;
+    var bC = this.bbox.bottom;
+    var rC = this.bbox.right;
+    var tC = this.bbox.top;
+    var bbox = null;
+    if (lC > rB || rC < lB || bC > tB || tC < bB) {
+        bbox = this.bbox;
+    } else {
+        bbox = {left: lC < lB ? lB : lC, bottom: bC < bB ? bB : bC, right: rC > rB ? rB : rC, top: tC > tB ? tB: tC};
+    }
+    bboxParam = OpenLayers.String.format('&bbox=${left},${bottom},${right},${top}', bbox);
     url += bboxParam;
 
     xhr = this.loader.GET({
